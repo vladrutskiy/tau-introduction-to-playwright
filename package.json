@@ -1,5 +1,5 @@
 {
-  "name": "tau-introduction-to-playwright",
+  "name": "tau-introduction-to-playwright_vlad",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -11,7 +11,8 @@
     "test:e2e:smoke": "npx playwright test tests-examples/ --grep @smoke --project=chromium",
     "test:e2e:non-smoke": "npx playwright test tests-examples/ --grep-invert @smoke --project=firefox",
     "test:visual:acme": "npx playwright test example-applitools.spec.ts --project=chromium",
-    "test:visual:playwright": "npx playwright test example3.spec.ts --project=all-browsers-and-tests"
+    "test:visual:playwright": "npx playwright test example3.spec.ts --project=all-browsers-and-tests",
+    "test:1+1": "npx playwright test abbydale.spec.ts"
   },
   "keywords": [],
   "author": "",
