@@ -98,3 +98,21 @@ test('/readme.html', async ({ page }) => {
   await expect (page.getByText(responseText, {exact: true})).not.toBeVisible();
 
 });
+
+test('/wp-cron.php', async ({ page }) => {
+  await page.goto('./wp-cron.php');
+
+  // Expect the /readme.html file is hidden.
+  await expect(page).not.toHaveTitle('');
+  await page.getByText('404').allInnerTexts();
+
+});
+
+test('/wp-content/plugins/social-warfare/', async ({ page }) => {
+  await page.goto('./wp-content/plugins/social-warfare/');
+
+  // Expect the /wp-content/plugins/social-warfare/ folder isn't exists.
+  await expect(page).not.toHaveTitle('');
+  await page.getByText('404').allInnerTexts();
+
+});
