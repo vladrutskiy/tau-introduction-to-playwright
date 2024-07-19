@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import assert from 'assert';
 import { only } from 'node:test';
+import { json } from 'stream/consumers';
 
 test('/wp-content/uploads/', async ({ page }) => {
   await page.goto('./wp-content/uploads/');
@@ -116,3 +117,240 @@ test('/wp-content/plugins/social-warfare/', async ({ page }) => {
   await page.getByText('404').allInnerTexts();
 
 });
+
+test('/wp-content/plugins/themes/twentytwenty/', async ({ page }) => {
+  await page.goto('./wp-content/plugins/themes/twentytwenty/');
+
+  // Expect the //wp-content/plugins/themes/twentytwenty/ HARMFUL theme isn't exists.
+  await expect(page).not.toHaveTitle('');
+  await page.getByText('404').allInnerTexts();
+
+});
+
+
+test('/wp-admin/install.php', async ({ page }) => {
+  await page.goto('./wp-admin/install.php');
+
+  // Expect the /wp-admin/install.php file isn't exists.
+  const responseText= "Already Installed";
+  await expect (page.getByText(responseText, {exact: true})).not.toBeVisible();
+  await page.getByText('404').allInnerTexts();
+
+});
+
+
+test('/wp-admin/readme.html', async ({ page }) => {
+  await page.goto('./wp-admin/readme.html');
+
+  // Expect the /wp-admin/install.php file isn't exists.
+    await page.getByText('404').allInnerTexts();
+});
+
+// test('/wp-json', async ({ page }) => {
+//   await page.goto('./wp-json');
+
+// // NEED TO UPDATE THE TEST IT IS NOT RELAYABLE!!!
+
+
+//   // Expect the /wp-json file isn't acceceble.
+//     // await page.getByText('404').allInnerTexts();
+//     const responseText= "You are not currently logged in";
+//     const responseText1= "description";
+//     await page.getByText(responseText).allInnerTexts();
+//     await expect (page.getByText(responseText1, {exact: true})).not.toBeVisible();
+//     //await page.getByText('You are not currently logged in').allInnerTexts();
+// });
+
+
+test('/hello-world/', async ({ page }) => {
+  await page.goto('./hello-world/');
+
+  // Expect the /hello-world/ page isn't exists.
+    await page.getByText('404').allInnerTexts();
+    await expect (page.getByText('Hello world!', {exact: true})).not.toBeVisible();
+});
+
+
+
+test('API response ./wp-json/wp/v2/users/ should not contain the word "description"', async ({ request }) => {
+  // Send a GET request to the API endpoint
+  const response = await request.get('./wp-json/wp/v2/users/');
+
+  // Ensure the request was successful
+  expect(response.status()).toBe(200);
+
+  // Parse the JSON response
+  const responseBody = await response.json();
+
+  // Convert the JSON response to a string
+  const responseBodyString = JSON.stringify(responseBody);
+
+  // Check that the response body does not contain the word "description"
+  expect(responseBodyString).not.toContain('description');
+});
+
+
+test('API response ./wp-json should not contain the word "description"', async ({ request }) => {
+  // Send a GET request to the API endpoint
+  const response = await request.get('./wp-json');
+
+  // Ensure the request was successful
+  expect(response.status()).toBe(200);
+
+  // Parse the JSON response
+  const responseBody = await response.json();
+
+  // Convert the JSON response to a string
+  const responseBodyString = JSON.stringify(responseBody);
+
+  // Check that the response body does not contain the word "description"
+  expect(responseBodyString).not.toContain('description');
+});
+
+test('API response /xmlrpc.php should not contain the word "Hello"', async ({ request }) => {
+  // Define the XML payload
+  const xmlPayload = `
+    <methodCall>
+      <methodName>demo.sayHello</methodName>
+      <params></params>
+    </methodCall>
+  `;
+
+  // Send a POST request with the XML payload
+  const response = await request.post('./xmlrpc.php', {
+    headers: {
+      'Content-Type': 'application/xml'
+    },
+    data: xmlPayload
+  });
+
+  // Ensure the request was successful
+  expect(response.status()).toBe(200);
+
+  // Get the response body as text
+  const responseBody = await response.text();
+
+  // Check that the response body does not contain the word "Hello"
+  expect(responseBody).not.toContain('Hello');
+});
+
+test('API response /xmlrpc.php should not contain the word "methodResponse"', async ({ request }) => {
+  // Define the XML payload
+  const xmlPayload = `
+    <methodCall>
+<methodName>system.listMethods</methodName>
+<params></params>
+</methodCall>
+  `;
+
+  // Send a POST request with the XML payload
+  const response = await request.post('./xmlrpc.php', {
+    headers: {
+      'Content-Type': 'application/xml'
+    },
+    data: xmlPayload
+  });
+
+  // Ensure the request was successful
+  expect(response.status()).toBe(200);
+
+  // Get the response body as text
+  const responseBody = await response.text();
+
+  // Check that the response body does not contain the word "methodResponse"
+  expect(responseBody).not.toContain('methodResponse');
+});
+
+
+// test('WordPress pingback.extensions.getPingbacks vulnerability test', async ({ request }) => {
+//   // Define the XML payload to test the vulnerability
+//   const xmlPayload = `
+//     <?xml version="1.0"?>
+//     <methodCall>
+//       <methodName>pingback.extensions.getPingbacks</methodName>
+//       <params>
+//         <param>
+//           <value>
+//             <string>./xmlrpc.php</string>
+//           </value>
+//         </param>
+//       </params>
+//     </methodCall>
+//   `;
+
+//   // Send a POST request with the XML payload
+//   const response = await request.post('./xmlrpc.php', {
+//     headers: {
+//       'Content-Type': 'application/xml'
+//     },
+//     data: xmlPayload
+//   });
+
+//   // Ensure the request was successful
+//   expect(response.status()).toBe(200);
+
+//   // Get the response body as text
+//   const responseBody = await response.text();
+
+//   // Check if the response indicates the presence of the vulnerability
+//   // For this example, let's assume the response contains "<value><string>pingback" if the vulnerability is present
+//   expect(responseBody).toContain('<value><string>pingback');
+// });
+
+// // Define the XML-RPC request payload
+// const xmlPayload = xmlbuilder.create('methodCall')
+//   .ele('methodName', 'pingback.extensions.getPingbacks')
+//   .up()
+//   .ele('params')
+//   .ele('param')
+//   .ele('value')
+//   .ele('string', './xmlrpc.php')
+//   .end({ pretty: true });
+
+// test('Pingback extensions getPingbacks response should be valid', async ({ request }) => {
+//   // Send the XML-RPC request
+//   const response = await request.post('./xmlrpc.php', {
+//     headers: {
+//       'Content-Type': 'text/xml'
+//     },
+//     data: xmlPayload.toString()
+//   });
+
+//   // Ensure the request was successful
+//   expect(response.status()).toBe(200);
+
+//   // Get the response body as text
+//   const responseBody = await response.text();
+
+//   // Parse the XML response
+//   const parser = new DOMParser();
+//   const xmlDoc = parser.parseFromString(responseBody, 'application/xml');
+
+//   // Check that the response contains expected XML structure
+//   const methodResponse = xmlDoc.getElementsByTagName('methodResponse')[0];
+//   expect(methodResponse).toBeTruthy();
+
+//   const params = methodResponse.getElementsByTagName('params')[0];
+//   expect(params).toBeTruthy();
+
+//   const param = params.getElementsByTagName('param')[0];
+//   expect(param).toBeTruthy();
+
+//   const value = param.getElementsByTagName('value')[0];
+//   expect(value).toBeTruthy();
+
+//   const array = value.getElementsByTagName('array')[0];
+//   expect(array).toBeTruthy();
+
+//   const data = array.getElementsByTagName('data')[0];
+//   expect(data).toBeTruthy();
+
+//   // Additional checks can be performed here as needed
+//   // For example, check that specific pingbacks are present
+//   const pingbacks = data.getElementsByTagName('value');
+//   for (let i = 0; i < pingbacks.length; i++) {
+//     const pingback = pingbacks[i].textContent;
+//     // Perform your validation logic here
+//     console.log(`Pingback: ${pingback}`);
+//   }
+// });
