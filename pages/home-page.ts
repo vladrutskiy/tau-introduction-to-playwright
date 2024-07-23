@@ -1,6 +1,11 @@
 import { type Locator, type Page, expect } from '@playwright/test';
 
 export class HomePage {
+    //varibles
+
+    // constructor
+
+    //methods
     readonly page: Page;
     readonly getStartedButton: Locator;
     readonly pageTitle: RegExp;

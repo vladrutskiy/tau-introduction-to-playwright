@@ -337,7 +337,7 @@ test('API response /xmlrpc.php should not contain the word "methodResponse"', as
 //   expect(param).toBeTruthy();
 
 //   const value = param.getElementsByTagName('value')[0];
-//   expect(value).toBeTruthy();
+//   expect(value).toBeTruthy();npx 
 
 //   const array = value.getElementsByTagName('array')[0];
 //   expect(array).toBeTruthy();
