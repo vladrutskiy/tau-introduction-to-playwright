@@ -37,7 +37,8 @@ export default defineConfig({
     // baseURL: 'https://theinterviewpal.com',
     // baseURL: 'https://rutskyi.yotako.com',
     //baseURL: 'https://tflite.com/',
-    baseURL: 'https://bikecalgary.org/',
+    //baseURL: 'https://bikecalgary.org/',
+    baseURL: 'https://seehearact.org/',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on',
